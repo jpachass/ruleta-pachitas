@@ -74,8 +74,22 @@ button {
 <h1>🔥 RULETA PACHITAS 🔥</h1>
 <p><b> COMPRA Y GANA AL INSTANTE </b></p>
 
-<input id="cliente" placeholder="Nombre" style="text-transform: uppercase;">
-
+<input id="cliente" placeholder="INGRESA TU NOMBRE"
+style="
+    text-transform: uppercase;
+    width: 80%;
+    max-width: 350px;
+    padding: 15px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    outline: none;
+    transition: 0.3s;
+"
+onfocus="this.style.borderColor='green'; this.style.boxShadow='0 0 10px rgba(0,255,0,0.5)'"
+onblur="this.style.borderColor='#ccc'; this.style.boxShadow='none'"
+>
 <div class="flecha">🔻</div>
 
 <canvas id="ruleta"></canvas>
