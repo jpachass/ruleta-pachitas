@@ -71,8 +71,8 @@ button {
 
 <body>
 
-<h1>🔥 Distribuidora Pachitas 🔥</h1>
-<p><b>El más confiable y seguro</b></p>
+<h1>🔥 DISTRIBUIDORA PACHITA 🔥</h1>
+<p><b>EL MAS SEGURO Y CONFIABLE</b></p>
 
 <input id="cliente" placeholder="Nombre">
 
@@ -91,7 +91,7 @@ button {
 <audio id="sonido" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
 
 <script>
-const opciones = ["S/2","S/3","GRACIAS","S/2","GRACIAS","S/3"];
+const opciones = ["S/2.00","S/3.00","GRACIAS","S/2.00","GRACIAS","S/3.00"];
 const colores = ["#ff4d4d","#ffd11a","#66cc66","#ff4d4d","#66cc66","#ffd11a"];
 
 const canvas = document.getElementById("ruleta");
@@ -169,7 +169,12 @@ function terminar(nombre){
     girando=false;
 
     let ang=2*Math.PI/opciones.length;
-    let i=Math.floor(((2*Math.PI - anguloActual%(2*Math.PI))/ang))%opciones.length;
+    let angulo = 2 * Math.PI / opciones.length;
+
+// 🔥 AJUSTE POR LA FLECHA (MUY IMPORTANTE)
+let anguloCorregido = (anguloActual + Math.PI / 2) % (2 * Math.PI);
+
+let i = Math.floor((2 * Math.PI - anguloCorregido) / angulo) % opciones.length;
 
     let premio=opciones[i];
 
