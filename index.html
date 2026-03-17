@@ -96,9 +96,6 @@ button {
 <div id="pantallaFinal">
     <div id="mensajeFinal"></div>
     <br>
-    <a id="whatsappBtn" target="_blank">
-        <button>📲 Pedir por WhatsApp</button>
-    </a>
 </div>
 
 <audio id="sonido" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
@@ -188,13 +185,8 @@ function terminar(nombre) {
 
     document.getElementById("pantallaFinal").style.display = "flex";
     document.getElementById("mensajeFinal").innerHTML =
-        "🎉 " + nombre + "<br>GANASTE: " + premio;
+    "🎉 FELICIDADES " + nombre + "<br><br>🎁 PREMIO: " + premio;
 
-    let numero = "51999999999"; // CAMBIA TU NUMERO
-    let mensaje = `Hola, soy ${nombre}. Gané ${premio} y quiero mi gas`;
-
-    document.getElementById("whatsappBtn").href =
-        "https://wa.me/" + numero + "?text=" + encodeURIComponent(mensaje);
 }
 
 dibujar();
