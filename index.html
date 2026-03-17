@@ -73,13 +73,13 @@ button {
 
 <h1 style="display:flex; align-items:center; justify-content:center; gap:10px;">
 <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" width="40">
-RULETA PACHITAS4
+RULETA PACHITAS
 <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" width="40">
 </h1>
-
+ 
 <input id="cliente" placeholder="INGRESA TU NOMBRE"
 style="
-    text-transform: uppercase;
+    text-transform: uppercase; 
     width: 80%;
     max-width: 350px;
     padding: 15px;
@@ -113,7 +113,7 @@ document.getElementById("cliente").addEventListener("input", function() {
     this.value = this.value.toUpperCase();
     this.value = this.value.replace(/[^A-Z\s]/g, '');
 }); 
-const opciones = ["S/2.00","S/3.00","GRACIAS","S/2.00","GRACIAS","S/3.00"];
+const opciones = ["S/2.00","S/3.00","2.50","S/2.00","S/2.50","S/3.00"];
 const colores = ["#ff4d4d","#ffd11a","#66cc66","#ff4d4d","#66cc66","#ffd11a"];
 
 const canvas = document.getElementById("ruleta");
