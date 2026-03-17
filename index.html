@@ -5,6 +5,14 @@
 <title>Distribuidora Pachitas</title>
 
 <style>
+    canvas {
+    width: 90vw;   /* ocupa 90% del ancho del celular */
+    max-width: 400px;
+    height: 90vw;
+    max-height: 400px;
+    background: white;
+    border-radius: 50%;
+}
 body {
     font-family: Arial;
     text-align: center;
@@ -53,7 +61,7 @@ input {
 
 <br>
 
-<canvas id="ruleta" width="320" height="320"></canvas>
+<canvas id="ruleta"></canvas>
 
 <br>
 <button onclick="girar()">GIRAR</button>
@@ -68,6 +76,14 @@ const colores = ["#ff4d4d","#ffd11a","#66cc66","#ff4d4d","#66cc66","#ffd11a"];
 
 const canvas = document.getElementById("ruleta");
 const ctx = canvas.getContext("2d");
+    function ajustarCanvas() {
+    let size = Math.min(window.innerWidth * 0.9, 400);
+    canvas.width = size;
+    canvas.height = size;
+}
+
+window.addEventListener("resize", ajustarCanvas);
+ajustarCanvas();
 
 let anguloActual = 0;
 let girando = false;
@@ -77,8 +93,8 @@ function dibujar() {
 
     for (let i = 0; i < opciones.length; i++) {
         ctx.beginPath();
-        ctx.moveTo(160,160);
-        ctx.arc(160,160,160, anguloActual + i*angulo, anguloActual + (i+1)*angulo);
+        ctx.moveTo(ctx.moveTo(let centro = canvas.width / 2;,1let centro = canvas.width / 2;60);,ctx.moveTo(160,160););
+        ctx.arc(let centro = canvas.width / 2;,let centro = canvas.width / 2;,let centro = canvas.width / 2;, anguloActual + i*angulo, anguloActual + (i+1)*angulo);
         ctx.fillStyle = colores[i];
         ctx.fill();
 
