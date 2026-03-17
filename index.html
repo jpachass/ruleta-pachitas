@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Distribuidora Pachitas</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background: radial-gradient(circle, #ffcc00, #ff6600);
+    margin: 0;
+}
+
+h1 { color: #b30000; }
+
+canvas {
+    width: 90vw;
+    max-width: 420px;
+    height: 90vw;
+    max-height: 420px;
+    background: white;
+    border-radius: 50%;
+}
+
+button {
+    padding: 12px 25px;
+    font-size: 18px;
+    margin-top: 15px;
+    background: green;
+    color: white;
+    border-radius: 8px;
+    border: none;
+}
+
+.flecha {
+    font-size: 45px;
+}
+
+#pantallaFinal {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:black;
+    color:white;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    font-size:30px;
+}
+
+.confeti {
+    position: fixed;
+    width:10px;
+    height:10px;
+    background:red;
+    top:0;
+    animation: caer 3s linear forwards;
+}
+
+@keyframes caer {
+    to { transform: translateY(100vh) rotate(720deg); }
+}
+</style>
+</head>
+
+<body>
+
+<h1>🔥 Distribuidora Pachitas 🔥</h1>
+<p><b>El más confiable y seguro</b></p>
+
+<input id="cliente" placeholder="Nombre">
+
+<div class="flecha">🔻</div>
+
+<canvas id="ruleta"></canvas>
+
+<br>
+<button onclick="girar()">GIRAR</button>
+
+<div id="pantallaFinal">
+    <div id="mensajeFinal"></div>
+    <button onclick="cerrar()">Cerrar</button>
+</div>
+
+<audio id="sonido" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+<script>
+const opciones = ["S/2","S/3","GRACIAS","S/2","GRACIAS","S/3"];
+const colores = ["#ff4d4d","#ffd11a","#66cc66","#ff4d4d","#66cc66","#ffd11a"];
+
+const canvas = document.getElementById("ruleta");
+const ctx = canvas.getContext("2d");
+
+let anguloActual = 0;
+let girando = false;
+
+function ajustarCanvas(){
+    let size = Math.min(window.innerWidth * 0.9, 420);
+    canvas.width = size;
+    canvas.height = size;
+    dibujar();
+}
+window.addEventListener("resize", ajustarCanvas);
+
+function dibujar(){
+    let c = canvas.width/2;
+    let r = c-5;
+    let ang = 2*Math.PI/opciones.length;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    for(let i=0;i<opciones.length;i++){
+        ctx.beginPath();
+        ctx.moveTo(c,c);
+        ctx.arc(c,c,r,anguloActual+i*ang,anguloActual+(i+1)*ang);
+        ctx.fillStyle=colores[i];
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(c,c);
+        ctx.rotate(anguloActual+i*ang+ang/2);
+        ctx.fillStyle="black";
+        ctx.font=`${c/8}px Arial`;
+        ctx.textAlign="right";
+        ctx.fillText(opciones[i], r-10,5);
+        ctx.restore();
+    }
+}
+
+function girar(){
+    if(girando)return;
+
+    let nombre=document.getElementById("cliente").value;
+    if(nombre===""){ alert("Ingrese nombre"); return; }
+
+    girando=true;
+
+    let vueltas=Math.random()*5+5;
+    let duracion=3500;
+    let inicio=null;
+
+    function animar(t){
+        if(!inicio) inicio=t;
+        let progreso=t-inicio;
+
+        let ease=1-Math.pow(1-progreso/duracion,3);
+        let velocidad=(vueltas*2*Math.PI)*(1-ease);
+
+        anguloActual+=velocidad*0.02;
+
+        dibujar();
+
+        if(progreso<duracion){
+            requestAnimationFrame(animar);
+        } else {
+            terminar(nombre);
+        }
+    }
+    requestAnimationFrame(animar);
+}
+
+function terminar(nombre){
+    girando=false;
+
+    let ang=2*Math.PI/opciones.length;
+    let i=Math.floor(((2*Math.PI - anguloActual%(2*Math.PI))/ang))%opciones.length;
+
+    let premio=opciones[i];
+
+    document.getElementById("sonido").play();
+
+    document.getElementById("pantallaFinal").style.display="flex";
+    document.getElementById("mensajeFinal").innerHTML =
+        "🎉 FELICIDADES "+nombre+"<br><br>🎁 "+premio;
+
+    lanzarConfeti();
+}
+
+function cerrar(){
+    document.getElementById("pantallaFinal").style.display="none";
+}
+
+// 🎉 CONFETI
+function lanzarConfeti(){
+    for(let i=0;i<50;i++){
+        let confeti=document.createElement("div");
+        confeti.className="confeti";
+        confeti.style.left=Math.random()*100+"vw";
+        confeti.style.backgroundColor=
+            ["red","yellow","green","blue"][Math.floor(Math.random()*4)];
+        confeti.style.animationDuration=(Math.random()*2+2)+"s";
+        document.body.appendChild(confeti);
+
+        setTimeout(()=>confeti.remove(),3000);
+    }
+}
+
+window.onload=ajustarCanvas;
+</script>
+
+</body>
+</html>
