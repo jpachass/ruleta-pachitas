@@ -74,7 +74,7 @@ button {
 <h1>🔥 RULETA PACHITAS 🔥</h1>
 <p><b> COMPRA Y GANA AL INSTANTE </b></p>
 
-<input id="cliente" placeholder="Nombre">
+<input id="cliente" placeholder="Nombre" style="text-transform: uppercase;">
 
 <div class="flecha">🔻</div>
 
@@ -91,6 +91,11 @@ button {
 <audio id="sonido" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
 
 <script>
+// 🔥 VALIDACIÓN DEL NOMBRE (AQUÍ VA TU CÓDIGO)
+document.getElementById("cliente").addEventListener("input", function() {
+    this.value = this.value.toUpperCase();
+    this.value = this.value.replace(/[^A-Z\s]/g, '');
+}); 
 const opciones = ["S/2.00","S/3.00","GRACIAS","S/2.00","GRACIAS","S/3.00"];
 const colores = ["#ff4d4d","#ffd11a","#66cc66","#ff4d4d","#66cc66","#ffd11a"];
 
