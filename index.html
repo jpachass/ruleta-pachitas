@@ -205,13 +205,12 @@ function terminar(nombre){
 
 // 🔥 AJUSTE POR LA FLECHA (MUY IMPORTANTE)
 let anguloCorregido = (anguloActual + Math.PI / 2) % (2 * Math.PI);
-
+ <p>🎁 GIRA LA RULETA Y GANA TU DESCUENTO 🎁</p>
 let i = Math.floor((2 * Math.PI - anguloCorregido) / angulo) % opciones.length;
 
     let premio=opciones[i];
 
     document.getElementById("sonido").play();
-
     document.getElementById("pantallaFinal").style.display="flex";
     document.getElementById("mensajeFinal").innerHTML =
     "🎉 FELICIDADES " + nombre + "<br><br>🎁 GANASTE " + premio + " DE DESCUENTO EN TU PRÓXIMA COMPRA";
