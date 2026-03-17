@@ -114,10 +114,13 @@ function ajustarCanvas() {
     let size = Math.min(window.innerWidth * 0.9, 400);
     canvas.width = size;
     canvas.height = size;
+
+    dibujar(); // 🔥 ESTO SOLUCIONA EL PROBLEMA
 }
 window.addEventListener("resize", ajustarCanvas);
+window.onload = function() {
 ajustarCanvas();
-
+dibujar();
 function dibujar() {
     let centro = canvas.width / 2;
     let angulo = 2 * Math.PI / opciones.length;
