@@ -74,8 +74,7 @@ button {
 
 <body>
 
-<h1 ondblclick="activarAdmin()" ...>
-    style="display:flex; align-items:center; justify-content:center; gap:10px;">
+<h1 style="display:flex; align-items:center; justify-content:center; gap:10px;">
 <svg width="40" height="40" viewBox="0 0 64 64">
   <rect x="18" y="12" width="28" height="38" rx="8" fill="#27ae60"/>
   <rect x="24" y="4" width="16" height="10" rx="3" fill="#1e8449"/>
@@ -107,30 +106,36 @@ style="
 onfocus="this.style.borderColor='green'; this.style.boxShadow='0 0 10px rgba(0,255,0,0.5)'"
 onblur="this.style.borderColor='#ccc'; this.style.boxShadow='none'"
 >
+
 <div class="flecha">🔻</div>
+
 <canvas id="ruleta"></canvas>
+
 <br>
 <button onclick="girar()">GIRAR</button>
+
 <br><br>
+
 <button onclick="resetearClientes()" 
 style="background:red;">
 🗑️ Resetear clientes
 </button>
+
 <button onclick="verRegistros()" style="margin-top:10px;">
 📊 Ver registros
 </button>
+
 <p>🎉🎉 GRACIAS POR ELEGIRNOS 🎉🎉</p>
+
 <div id="pantallaFinal">
     <div id="mensajeFinal"></div>
     <button onclick="cerrar()">Cerrar</button>
 </div>
+
 <audio id="sonido" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
 <script>
-    function activarAdmin() {
-    document.getElementById("btnReset").style.display = "inline-block";
-    document.getElementById("btnVer").style.display = "inline-block";
-    alert("🔓 ADMIN ACTIVADO");
-}
+
 // VALIDACIÓN DEL NOMBRE
 document.getElementById("cliente").addEventListener("input", function() {
     this.value = this.value.toUpperCase();
@@ -178,6 +183,7 @@ function dibujar(){
         ctx.restore();
     }
 }
+
 function girar(){
     if(girando)return;
 
@@ -198,7 +204,9 @@ function girar(){
         let velocidad=(vueltas*2*Math.PI)*(1-ease);
 
         anguloActual+=velocidad*0.02;
+
         dibujar();
+
         if(progreso<duracion){
             requestAnimationFrame(animar);
         } else {
@@ -230,8 +238,10 @@ function terminar(nombre){
         fecha: new Date().toLocaleString()
     });
     localStorage.setItem("clientesPachitas", JSON.stringify(registros));
+
     lanzarConfeti();
 }
+
 function cerrar(){
     document.getElementById("pantallaFinal").style.display="none";
 }
@@ -250,6 +260,7 @@ function lanzarConfeti(){
         setTimeout(()=>confeti.remove(),3000);
     }
 }
+
 function verRegistros() {
     let registros = JSON.parse(localStorage.getItem("clientesPachitas")) || [];
 
@@ -257,23 +268,29 @@ function verRegistros() {
         alert("No hay registros aún");
         return;
     }
+
     let texto = "📊 REGISTRO DE CLIENTES:\n\n";
+
     registros.forEach((r, i) => {
         texto += (i+1) + ". " + r.nombre + " - " + r.premio + " - " + r.fecha + "\n";
     });
+
     alert(texto);
 }
+
 function resetearClientes() {
     let clave = prompt("Ingrese clave de administrador:");
 
     if (clave === "1234") {
         localStorage.removeItem("clientesPachitas");
-         alert("✅ REGISTROS ELIMINADOS");
+        alert("✅ REGISTROS ELIMINADOS");
     } else {
         alert("❌ CLAVE INCORRECTA");
     }
 }
+
 window.onload=ajustarCanvas;
+
 </script>
 
 </body>
