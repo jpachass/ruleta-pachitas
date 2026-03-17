@@ -115,13 +115,9 @@ onblur="this.style.borderColor='#ccc'; this.style.boxShadow='none'"
 <button onclick="girar()">GIRAR</button>
 
 <br><br>
-
-<br><br>
-
 <button onclick="resetearClientes()" style="display:none;">
 🗑️ Resetear clientes
 </button>
-
 <button onclick="verRegistros()" style="display:none;">
 📊 Ver registros
 </button>
@@ -219,7 +215,6 @@ function girar(){
 
 function terminar(nombre){
     girando=false;
-
     let angulo = 2 * Math.PI / opciones.length;
     let anguloCorregido = (anguloActual + Math.PI / 2) % (2 * Math.PI);
     let i = Math.floor((2 * Math.PI - anguloCorregido) / angulo) % opciones.length;
@@ -242,11 +237,9 @@ function terminar(nombre){
 
     lanzarConfeti();
 }
-
 function cerrar(){
     document.getElementById("pantallaFinal").style.display="none";
 }
-
 // CONFETI
 function lanzarConfeti(){
     for(let i=0;i<50;i++){
@@ -261,7 +254,6 @@ function lanzarConfeti(){
         setTimeout(()=>confeti.remove(),3000);
     }
 }
-
 function verRegistros() {
     let registros = JSON.parse(localStorage.getItem("clientesPachitas")) || [];
 
@@ -269,19 +261,14 @@ function verRegistros() {
         alert("No hay registros aún");
         return;
     }
-
     let texto = "📊 REGISTRO DE CLIENTES:\n\n";
-
     registros.forEach((r, i) => {
         texto += (i+1) + ". " + r.nombre + " - " + r.premio + " - " + r.fecha + "\n";
     });
-
     alert(texto);
 }
-
 function resetearClientes() {
     let clave = prompt("Ingrese clave de administrador:");
-
     if (clave === "1234") {
         localStorage.removeItem("clientesPachitas");
         alert("✅ REGISTROS ELIMINADOS");
@@ -289,9 +276,7 @@ function resetearClientes() {
         alert("❌ CLAVE INCORRECTA");
     }
 }
-
 window.onload=ajustarCanvas;
-
 </script>
 
 </body>
