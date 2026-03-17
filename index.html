@@ -244,29 +244,29 @@ function lanzarConfeti(){
         setTimeout(()=>confeti.remove(),3000);
     }
 }
-function verRegistros() {
-    let registros = JSON.parse(localStorage.getItem("clientesPachitas")) || [];
+//function verRegistros() {
+  //  let registros = JSON.parse(localStorage.getItem("clientesPachitas")) || [];
 
-    if (registros.length === 0) {
-        alert("No hay registros aún");
-        return;
-    }
-    let texto = "📊 REGISTRO DE CLIENTES:\n\n";
-    registros.forEach((r, i) => {
-        texto += (i+1) + ". " + r.nombre + " - " + r.premio + " - " + r.fecha + "\n";
-    });
-    alert(texto);
-}
-function resetearClientes() {
-    let clave = prompt("Ingrese clave de administrador:");
+    //if (registros.length === 0) {
+      //  alert("No hay registros aún");
+        //return;
+    //}
+    //let texto = "📊 REGISTRO DE CLIENTES:\n\n";
+    //registros.forEach((r, i) => {
+      //  texto += (i+1) + ". " + r.nombre + " - " + r.premio + " - " + r.fecha + "\n";
+    //});
+    //alert(texto);
+//}
+//function resetearClientes() {
+  //  let clave = prompt("Ingrese clave de administrador:");
 
-    if (clave === "1234") {
-        localStorage.removeItem("clientesPachitas");
-        alert("✅ REGISTROS ELIMINADOS");
-    } else {
-        alert("❌ CLAVE INCORRECTA");
-    }
-}
+    //if (clave === "1234") {
+      //  localStorage.removeItem("clientesPachitas");
+        // alert("✅ REGISTROS ELIMINADOS");
+    //} else {
+      //  alert("❌ CLAVE INCORRECTA");
+    //}
+//}
 window.onload=ajustarCanvas;
 </script>
 
