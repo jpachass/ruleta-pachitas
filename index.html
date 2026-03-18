@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RULETA PACHITAS</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background: radial-gradient(circle, #ffcc00, #ff6600);
+    margin: 0;
+}
+
+h1 { color: #b30000; }
+
+canvas {
+    width: 90vw;
+    max-width: 420px;
+    height: 90vw;
+    max-height: 420px;
+    background: white;
+    border-radius: 50%;
+}
+
+button {
+    padding: 12px 25px;
+    font-size: 18px;
+    margin-top: 15px;
+    background: green;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.flecha { font-size: 45px; }
+
+#pantallaFinal {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:black;
+    color:white;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    font-size:28px;
+    text-align:center;
+    padding:20px;
+}
+
+.confeti {
+    position: fixed;
+    width:10px;
+    height:10px;
+    top:0;
+    animation: caer 3s linear forwards;
+}
+
+@keyframes caer {
+    to { transform: translateY(100vh) rotate(720deg); }
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎡 RULETA PACHITAS 🎡</h1>
+
+<p>🎁 GIRA LA RULETA Y GANA TU DESCUENTO 🎁</p>
+
+<input id="nombre" placeholder="INGRESA TU NOMBRE"
+style="width:80%; max-width:350px; padding:12px; font-size:18px; text-align:center; border-radius:10px; border:2px solid #ccc; text-transform:uppercase;">
+<br><br>
+
+<input id="celular" placeholder="INGRESA TU CELULAR"
+style="width:80%; max-width:350px; padding:12px; font-size:18px; text-align:center; border-radius:10px; border:2px solid #ccc;">
+
+<div class="flecha">🔻</div>
+
+<canvas id="ruleta"></canvas>
+
+<br>
+<button onclick="girar()">GIRAR</button>
+
+<!-- BOTONES OCULTOS -->
+<button id="btnReset" onclick="resetearClientes()" style="display:none;">Reset</button>
+<button id="btnVer" onclick="verRegistros()" style="display:none;">Ver</button>
+<button id="btnExcel" onclick="exportarExcelPro()" style="display:none;">Excel</button>
+<button id="btnEliminar" onclick="eliminarCliente()" style="display:none;">Eliminar</button>
+
+<div id="pantallaFinal">
+    <div id="mensajeFinal"></div>
+    <button onclick="cerrar()">Cerrar</button>
+</div>
+
+<audio id="sonido" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+<script>
+
+// VALIDACIONES
+document.getElementById("nombre").addEventListener("input", function() {
+    this.value = this.value.toUpperCase().replace(/[^A-Z\s]/g, '');
+});
+
+document.getElementById("celular").addEventListener("input", function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+
+// FECHA COMPLETA
+function obtenerFechaPro(){
+    let f = new Date();
+    let año = f.getFullYear();
+    let mes = String(f.getMonth()+1).padStart(2,'0');
+    let dia = String(f.getDate()).padStart(2,'0');
+    let hora = String(f.getHours()).padStart(2,'0');
+    let min = String(f.getMinutes()).padStart(2,'0');
+    let seg = String(f.getSeconds()).padStart(2,'0');
+    return `${año}-${mes}-${dia} ${hora}:${min}:${seg}`;
+}
+
+// SOLO FECHA (PARA VALIDACIÓN DIARIA)
+function obtenerSoloFecha(){
+    let f = new Date();
+    let año = f.getFullYear();
+    let mes = String(f.getMonth()+1).padStart(2,'0');
+    let dia = String(f.getDate()).padStart(2,'0');
+    return `${año}-${mes}-${dia}`;
+}
+
+// VALIDAR CELULAR PERÚ
+function validarCelularPeru(celular){
+    if(!/^[0-9]+$/.test(celular)) return false;
+    if(celular.length !== 9) return false;
+    if(!celular.startsWith("9")) return false;
+    return true;
+}
+
+// RULETA
+const opciones = ["S/2.00","S/3.00","S/2.50","S/2.00","S/2.50","S/3.00"];
+const colores = ["#ff4d4d","#ffd11a","#66cc66","#ff4d4d","#66cc66","#ffd11a"];
+
+const canvas = document.getElementById("ruleta");
+const ctx = canvas.getContext("2d");
+
+let anguloActual = 0;
+let girando = false;
+
+function ajustarCanvas(){
+    let size = Math.min(window.innerWidth * 0.9, 420);
+    canvas.width = size;
+    canvas.height = size;
+    dibujar();
+}
+window.addEventListener("resize", ajustarCanvas);
+
+function dibujar(){
+    let c = canvas.width/2;
+    let r = c-5;
+    let ang = 2*Math.PI/opciones.length;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    for(let i=0;i<opciones.length;i++){
+        ctx.beginPath();
+        ctx.moveTo(c,c);
+        ctx.arc(c,c,r,anguloActual+i*ang,anguloActual+(i+1)*ang);
+        ctx.fillStyle=colores[i];
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(c,c);
+        ctx.rotate(anguloActual+i*ang+ang/2);
+        ctx.fillStyle="black";
+        ctx.font=`${c/8}px Arial`;
+        ctx.textAlign="right";
+        ctx.fillText(opciones[i], r-10,5);
+        ctx.restore();
+    }
+}
+
+function girar(){
+    if(girando)return;
+
+    let nombre = document.getElementById("nombre").value.trim();
+    let celular = document.getElementById("celular").value.trim();
+
+    if(nombre===""){ alert("Ingrese nombre"); return; }
+
+    if (!validarCelularPeru(celular)) {
+        alert("❌ CELULAR INVÁLIDO");
+        return;
+    }
+
+    let registros = JSON.parse(localStorage.getItem("clientesPachitas")) || [];
+
+    // VALIDACIÓN POR DÍA
+    let hoy = obtenerSoloFecha();
+
+    let existeHoy = registros.find(r => 
+        r.celular === celular && r.fecha.startsWith(hoy)
+    );
+
+    if (existeHoy) {
+        alert("⚠️ YA PARTICIPASTE HOY, VUELVE MAÑANA 😊");
+        return;
+    }
+
+    girando=true;
+
+    let vueltas=Math.random()*5+5;
+    let duracion=3500;
+    let inicio=null;
+
+    function animar(t){
+        if(!inicio) inicio=t;
+        let progreso=t-inicio;
+
+        let ease=1-Math.pow(1-progreso/duracion,3);
+        let velocidad=(vueltas*2*Math.PI)*(1-ease);
+
+        anguloActual+=velocidad*0.02;
+
+        dibujar();
+
+        if(progreso<duracion){
+            requestAnimationFrame(animar);
+        } else {
+            terminar(nombre,celular);
+        }
+    }
+    requestAnimationFrame(animar);
+}
+
+function terminar(nombre,celular){
+    girando=false;
+
+    let angulo = 2*Math.PI/opciones.length;
+    let anguloCorregido = (anguloActual + Math.PI/2) % (2*Math.PI);
+    let i = Math.floor((2*Math.PI - anguloCorregido)/angulo) % opciones.length;
+
+    let premio=opciones[i];
+
+    document.getElementById("sonido").play();
+    document.getElementById("pantallaFinal").style.display="flex";
+    document.getElementById("mensajeFinal").innerHTML =
+    `🎉 FELICIDADES ${nombre}<br>📱 ${celular}<br><br>🎁 GANASTE ${premio} DE DESCUENTO EN TU PRÓXIMA COMPRA`;
+
+    let registros = JSON.parse(localStorage.getItem("clientesPachitas")) || [];
+    registros.push({nombre,celular,premio,fecha:obtenerFechaPro()});
+    localStorage.setItem("clientesPachitas", JSON.stringify(registros));
+
+    lanzarConfeti();
+}
+
+function cerrar(){
+    document.getElementById("pantallaFinal").style.display="none";
+}
+
+// CONFETI
+function lanzarConfeti(){
+    for(let i=0;i<50;i++){
+        let c=document.createElement("div");
+        c.className="confeti";
+        c.style.left=Math.random()*100+"vw";
+        c.style.backgroundColor=["red","yellow","green","blue"][Math.floor(Math.random()*4)];
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),3000);
+    }
+}
+
+// ADMIN
+function verRegistros(){
+    let r=JSON.parse(localStorage.getItem("clientesPachitas"))||[];
+    if(r.length===0){alert("No hay registros");return;}
+    let t="📊 REGISTROS\n\n";
+    r.forEach((x,i)=>{t+=`${i+1}. ${x.nombre} - ${x.celular} - ${x.premio} - ${x.fecha}\n`;});
+    alert(t);
+}
+
+function resetearClientes(){
+    let clave=prompt("Clave:");
+    if(clave==="1234"){
+        localStorage.removeItem("clientesPachitas");
+        alert("Registros eliminados");
+    }else{
+        alert("Clave incorrecta");
+    }
+}
+
+function eliminarCliente(){
+    let celular = prompt("Ingrese celular a eliminar:");
+
+    if (!validarCelularPeru(celular)) {
+        alert("❌ Número inválido");
+        return;
+    }
+
+    let registros = JSON.parse(localStorage.getItem("clientesPachitas")) || [];
+
+    let nuevos = registros.filter(r => r.celular !== celular);
+
+    if (registros.length === nuevos.length) {
+        alert("❌ No se encontró ese número");
+    } else {
+        localStorage.setItem("clientesPachitas", JSON.stringify(nuevos));
+        alert("✅ Cliente eliminado");
+    }
+}
+
+// EXPORTAR EXCEL
+function exportarExcelPro(){
+    let r=JSON.parse(localStorage.getItem("clientesPachitas"))||[];
+
+    let html="<table border='1'><tr><th>N°</th><th>Nombre</th><th>Celular</th><th>Premio</th><th>Fecha</th></tr>";
+
+    r.forEach((x,i)=>{
+        html+=`<tr>
+        <td>${i+1}</td>
+        <td>${x.nombre}</td>
+        <td>${x.celular}</td>
+        <td>${x.premio}</td>
+        <td>${x.fecha}</td>
+        </tr>`;
+    });
+
+    html+="</table>";
+
+    let blob=new Blob([html],{type:"application/vnd.ms-excel"});
+    let a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="reporte_pachitas.xls";
+    a.click();
+}
+
+// ACTIVAR ADMIN CON PALABRA
+let claveSecreta = "";
+const palabraAdmin = "PACHITAS";
+
+document.addEventListener("keydown", function(e) {
+
+    claveSecreta += e.key.toUpperCase();
+
+    if (claveSecreta.length > palabraAdmin.length) {
+        claveSecreta = claveSecreta.slice(-palabraAdmin.length);
+    }
+
+    if (claveSecreta === palabraAdmin) {
+
+        document.getElementById("btnReset").style.display = "inline-block";
+        document.getElementById("btnVer").style.display = "inline-block";
+        document.getElementById("btnExcel").style.display = "inline-block";
+        document.getElementById("btnEliminar").style.display = "inline-block";
+
+        alert("🔓 MODO ADMIN ACTIVADO");
+
+        claveSecreta = "";
+    }
+});
+
+window.onload=ajustarCanvas;
+
+</script>
+
+</body>
+</html>
